@@ -90,12 +90,24 @@ static core_status server_event(core_event *event)
   return CORE_OK;
 }
 
+static core_status timer_event(core_event *event)
+{
+  http_date(1);
+  return CORE_OK;
+}
+
 int main()
 {
   int s, e;
+  timer timer;
 
   signal(SIGPIPE, SIG_IGN);
+
   core_construct(NULL);
+
+  timer_construct(&timer, timer_event, &timer);
+  timer_set(&timer, 1, 1000000000);
+
   s = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
   if (s == -1)
     err(1, "socket");
